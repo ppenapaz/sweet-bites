@@ -9,17 +9,17 @@
         <router-link :to="{ name: 'Shop' }" class="btn btn-info"><i class="fas fa-shopping-cart"></i> Shop</router-link>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
-                <li class="nav-item active">
-                <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-                </li>
                 <li class="nav-item">
-                <a class="nav-link" href="#">Features</a>
+                    <router-link :to="{ name: 'Home' }" class="nav-link">Home</router-link>
                 </li>
-                <li class="nav-item">
-                <a class="nav-link" href="#">Pricing</a>
+                <li v-if="!user" class="nav-item">
+                    <router-link :to="{ name: 'Signup' }" class="nav-link">Signup</router-link>
                 </li>
-                <li class="nav-item">
-                <a class="nav-link disabled" href="#">Disabled</a>
+                <li v-if="!user" class="nav-item">
+                    <router-link :to="{ name: 'Login' }" class="nav-link">Login</router-link>
+                </li>
+                <li v-if="user" class="nav-item">
+                    <a class="nav-link" @click="logout">Logout</a>
                 </li>
             </ul>
         </div>
@@ -27,12 +27,31 @@
 </template>
 
 <script>
+import firebase from 'firebase'
 export default {
     name: 'Navbar',
     data(){
         return {
-
+            user: null
         }
+    },
+    methods: {
+        logout(){
+            //redirect after logout
+            firebase.auth().signOut().then(() => {
+                this.$router.push({ name: 'Login' })
+            })
+        }
+    },
+    created() {
+        // everytime user logs in or logs out or signs up
+        firebase.auth().onAuthStateChanged((user) => {
+            if(user) {
+                this.user = user
+            } else {
+                this.user = null
+            }
+        })
     }
 }
 </script>
