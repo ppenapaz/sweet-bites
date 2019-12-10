@@ -1,89 +1,74 @@
 <template>
   <div class="container">
         <br>
-        <div class="card-columns text-center">
+        <div class="card-columns text-center" v-for="cupcake in cupcakes" :key="cupcake.id">
             <div class="card">
-                <img class="card-img-top" src="@/assets/cupcakes/chocolate.jpg" alt="Card image cap">
+                <img class="card-img-top" v-bind:src="cupcake.img" alt="Card image cap">
                 <div class="card-body">
-                    <h5 class="card-title">Chocolate Cupcake</h5>
+                    <h5 class="card-title">{{ cupcake.name }}</h5>
                     <p class="card-text">
-                        This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.
+                        {{ cupcake.description }}
                     </p>
+                    <span v-for="(ing, index) in cupcake.ingredients" :key="index" class="badge badge-pill badge-primary">{{ing}}</span>
                 </div>
                 <div class="card-footer">
-                    <a href="/shop.html" class="btn btn-info"><i class="fas fa-shopping-cart"></i> Shop</a>
+                    <a @click="addCart(cupcake.id)" class="btn btn-default"><i class="fas fa-shopping-cart"></i> Add to cart</a>
                 </div>
             </div>
-            <div class="card">
-                <img class="card-img-top" src="@/assets/cupcakes/cherry.png" alt="Card image cap">
-                <div class="card-body">
-                    <h5 class="card-title">Card title</h5>
-                    <p class="card-text">This card has supporting text below as a natural lead-in to additional content.</p>
-                    <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-                </div>
-                <div class="card-footer">
-                    <a href="/shop.html" class="btn btn-info"><i class="fas fa-shopping-cart"></i> Shop</a>
-                </div>
-            </div>
-            <div class="card">
-                <img class="card-img-top" src="@/assets/cupcakes/banana.png" alt="Card image cap">
-                <div class="card-body">
-                    <h5 class="card-title">Card title</h5>
-                    <p class="card-text">This card has supporting text below as a natural lead-in to additional content.</p>
-                    <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-                </div>
-                <div class="card-footer">
-                    <a href="/shop.html" class="btn btn-info"><i class="fas fa-shopping-cart"></i> Shop</a>
-                </div>
-            </div>
-            <div class="card">
-                <img class="card-img-top" src="@/assets/cupcakes/mango.png" alt="Card image cap">
-                <div class="card-body">
-                    <h5 class="card-title">Card title</h5>
-                    <p class="card-text">This card has supporting text below as a natural lead-in to additional content.</p>
-                    <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-                </div>
-                <div class="card-footer">
-                    <a href="/shop.html" class="btn btn-info"><i class="fas fa-shopping-cart"></i> Shop</a>
-                </div>
-            </div>
-            <div class="card">
-                <img class="card-img-top" src="@/assets/cupcakes/red_velvet.png" alt="Card image cap">
-                <div class="card-body">
-                    <h5 class="card-title">Card title</h5>
-                    <p class="card-text">This card has supporting text below as a natural lead-in to additional content.</p>
-                    <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-                </div>
-                <div class="card-footer">
-                    <a href="/shop.html" class="btn btn-info"><i class="fas fa-shopping-cart"></i> Shop</a>
-                </div>
-            </div>
-            <div class="card">
-                    <img class="card-img-top" src="@/assets/cupcakes/tres_leches.png" alt="Card image cap">
-                    <div class="card-body">
-                        <h5 class="card-title">Card title</h5>
-                        <p class="card-text">This card has supporting text below as a natural lead-in to additional content.</p>
-                        <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-                    </div>
-                    <div class="card-footer">
-                        <a href="/shop.html" class="btn btn-info"><i class="fas fa-shopping-cart"></i> Shop</a>
-                    </div>
-                </div>
         </div>
     </div>
 </template>
 
 <script>
+import firebase from 'firebase'
+import db from '@/firebase/init'
+
 export default {
     name: 'Shop',
     data(){
         return {
-            
+            cupcakes: [],
+            cart: []
         }
+    },
+    methods: {
+        addCart(id) {
+            let user = firebase.auth().currentUser
+
+            // FIND CUPCAKE
+            let ref = db.collection('cupcakes').doc(id).get().then( (doc) => {    
+                let add_cupcake = {
+                    cupcake_id: doc.id,
+                    user_id: user.uid,
+                    price: doc.data().price,
+                    name: doc.data().name,
+                    quantity: 1
+                }
+                console.log(add_cupcake) 
+                    
+                //add cupcake to cart
+                db.collection('cart').add(add_cupcake).catch(err => {
+                    console.log(err)
+                })
+
+            }).catch( (error) => { })
+        }
+    },
+    created(){
+        //fetch data from the firestore
+        db.collection('cupcakes').get()
+        .then(snapshot => {
+            snapshot.forEach(doc => {
+                let cupcake = doc.data();
+                cupcake.id = doc.id
+                this.cupcakes.push(cupcake)
+            })
+        })
     }
 }
 </script>
 
 <style>
-
+.card{
+}
 </style>

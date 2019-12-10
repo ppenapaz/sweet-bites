@@ -1,29 +1,23 @@
 <template>
-    <nav class="navbar navbar-light">
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <a class="navbar-brand mx-auto" href="/">
-            <img src="@/assets/LogoSB.png" width="200" height="60" alt="">
-        </a>
-        <router-link :to="{ name: 'Shop' }" class="btn btn-info"><i class="fas fa-shopping-cart"></i> Shop</router-link>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <router-link :to="{ name: 'Home' }" class="nav-link">Home</router-link>
-                </li>
-                <li v-if="!user" class="nav-item">
-                    <router-link :to="{ name: 'Signup' }" class="nav-link">Signup</router-link>
-                </li>
-                <li v-if="!user" class="nav-item">
-                    <router-link :to="{ name: 'Login' }" class="nav-link">Login</router-link>
-                </li>
-                <li v-if="user" class="nav-item">
-                    <a class="nav-link" @click="logout">Logout</a>
-                </li>
-            </ul>
-        </div>
-    </nav>
+    <div>
+        <nav class="navbar navbar-light">
+            <a class="navbar-brand mx-auto" href="/">
+                <img src="@/assets/LogoSB.png" width="200" height="60" alt="">
+            </a>
+        </nav>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="navbar-nav mx-auto">
+                <router-link :to="{ name: 'Home' }" class="nav-link">Home</router-link>
+                <router-link :to="{ name: 'Shop' }" class="nav-link">Shop</router-link>
+                <router-link v-if="!user" :to="{ name: 'Signup' }" class="nav-link">Signup</router-link>
+                <router-link v-if="!user" :to="{ name: 'Login' }" class="nav-link">Login</router-link>
+                <a v-if="user" class="nav-link" @click="logout">Logout</a>
+            </div>
+            <div class="right-side">
+                <router-link :to="{ name: 'Cart' }" class="btn btn-info"><i class="fas fa-shopping-cart"></i> Cart</router-link>
+            </div>
+        </nav>
+    </div>
 </template>
 
 <script>
@@ -64,5 +58,8 @@ export default {
 .navbar {
   background-color: #fff;
 }
-
+.right-side{
+    position: absolute;
+    right: 10px;
+}
 </style>
