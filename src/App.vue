@@ -20,4 +20,12 @@ export default {
 </script>
 
 <style>
+a:not([href]):not([tabindex]){
+  color: white;
+  text-decoration: none;
+}
+
+a:not([href]):not([tabindex]):hover{
+  color: white;
+}
 </style>
