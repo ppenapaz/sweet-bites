@@ -42,9 +42,10 @@ export default {
                     user_id: user.uid,
                     price: doc.data().price,
                     name: doc.data().name,
-                    quantity: 1
+                    quantity: 1,
+                    description: doc.data().description
                 }
-                console.log(add_cupcake) 
+                //console.log(add_cupcake) 
                     
                 //add cupcake to cart
                 db.collection('cart').add(add_cupcake).catch(err => {

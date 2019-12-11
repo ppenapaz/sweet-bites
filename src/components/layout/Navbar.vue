@@ -14,7 +14,7 @@
                 <a v-if="user" class="nav-link" @click="logout">Logout</a>
             </div>
             <div class="right-side">
-                <router-link :to="{ name: 'Cart' }" class="btn btn-info"><i class="fas fa-shopping-cart"></i> Cart</router-link>
+                <router-link :to="{ name: 'Cart' }" class="btn btn-info"><i class="fas fa-shopping-cart"></i> Cart <span v-if="user" class="badge badge-secondary badge-pill">{{ count }}</span></router-link>
             </div>
         </nav>
     </div>
@@ -22,11 +22,14 @@
 
 <script>
 import firebase from 'firebase'
+import db from '@/firebase/init'
+
 export default {
     name: 'Navbar',
     data(){
         return {
-            user: null
+            user: null,
+            count: 0
         }
     },
     methods: {
@@ -38,14 +41,37 @@ export default {
         }
     },
     created() {
+        
         // everytime user logs in or logs out or signs up
         firebase.auth().onAuthStateChanged((user) => {
+            this.count = 0
             if(user) {
                 this.user = user
+
+                let ref = db.collection('cart').where('user_id', '==', this.user.uid)
+                ref.onSnapshot(snapshot => {
+                snapshot.docChanges().forEach(change => {
+                    if(change.type == 'added'){
+                        this.count ++
+                    }
+
+                    if(change.type == 'removed'){
+                        this.count --
+                    }
+                })
+            })
+
             } else {
                 this.user = null
             }
         })
+
+        
+        //if(this.user){
+        
+        //}
+
+        
     }
 }
 </script>
