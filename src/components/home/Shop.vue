@@ -99,4 +99,13 @@ export default {
 .input-number{
     width: auto;
 }
+/* Hover Effects on Card */
+
+@media (min-width: 992px) {
+  .cupcake-container:hover {
+    margin-top: -.25rem;
+    margin-bottom: .25rem;
+    box-shadow: 0 0.5rem 1rem 0 rgba(0, 0, 0, 0.3);
+  }
+}
 </style>
