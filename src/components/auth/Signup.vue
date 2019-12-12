@@ -62,4 +62,6 @@ export default {
 .signup .field {
     margin-bottom: 16px;
 }
+
+
 </style>

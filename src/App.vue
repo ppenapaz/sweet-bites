@@ -28,4 +28,31 @@ a:not([href]):not([tabindex]){
 a:not([href]):not([tabindex]):hover{
   color: white;
 }
+
+body{
+  background-color: #fff;
+  background: repeating-linear-gradient(
+    45deg,
+    #fbb7bf,
+    #fbb7bf 20px,
+    white 20px,
+    white 30px
+  );
+}
+
+
+#app {
+  position: relative;
+  min-height: 100vh;
+}
+.pink{
+    background-color:  rgb(250, 126, 188);
+    color: white;
+}
+.container{
+  margin-top: 60px;
+  background-color: white;
+  border-radius: 10px;
+}
+
 </style>

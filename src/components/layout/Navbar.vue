@@ -1,22 +1,24 @@
 <template>
     <div>
-        <nav class="navbar navbar-light">
+        <nav class="navbar navbar-light fixed-top">
             <a class="navbar-brand mx-auto" href="/">
                 <img src="@/assets/LogoSB.png" width="200" height="60" alt="">
             </a>
         </nav>
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <nav class="navbar navbar-expand-lg navbar-light fixed-bottom bg-light">
             <div class="navbar-nav mx-auto">
-                <router-link :to="{ name: 'Home' }" class="nav-link">Home</router-link>
-                <router-link :to="{ name: 'Shop' }" class="nav-link">Shop</router-link>
-                <router-link v-if="!user" :to="{ name: 'Signup' }" class="nav-link">Signup</router-link>
-                <router-link v-if="!user" :to="{ name: 'Login' }" class="nav-link">Login</router-link>
-                <a v-if="user" class="nav-link" @click="logout">Logout</a>
+                <router-link :to="{ name: 'Home' }" class="nav-btn btn btn-pink btn-lg"><i class="fas fa-home"></i></router-link>
+                <router-link :to="{ name: 'Shop' }" class="nav-btn btn btn-primary btn-lg"><i class="fas fa-gift"></i> Shop</router-link>
+                <router-link v-if="!user" :to="{ name: 'Login' }" class="nav-btn btn btn-info btn-lg"><i class="fas fa-user"></i></router-link>
+                <a v-if="user" class="nav-btn btn btn-danger btn-lg" @click="logout"><i class="fas fa-sign-out-alt"></i></a>
             </div>
             <div class="right-side">
-                <router-link :to="{ name: 'Cart' }" class="btn btn-info"><i class="fas fa-shopping-cart"></i> Cart <span v-if="user" class="badge badge-secondary badge-pill">{{ count }}</span></router-link>
+                <router-link v-if="user" :to="{ name: 'Cart' }" class="btn btn-pink btn-lg"><i class="fas fa-shopping-cart"></i> My Cart <span v-if="user" class="badge pink badge-pill">{{ count }}</span></router-link>
             </div>
         </nav>
+        <br>
+        <br>
+        <br>
     </div>
 </template>
 
@@ -77,6 +79,19 @@ export default {
 </script>
 
 <style>
+.btn-pink{
+    background-color: #F846A0;
+    text-decoration:none;
+    color: white;
+}
+.btn-pink:hover{
+    background-color: #F874B7;
+    text-decoration:none;
+    color: white;
+}
+.nav-btn{
+    margin: auto 7px;
+}
 .navbar-logo {
     width: 90px;
 }
@@ -87,5 +102,8 @@ export default {
 .right-side{
     position: absolute;
     right: 10px;
+}
+.fixed-bottom{
+    font-size: 22px;
 }
 </style>

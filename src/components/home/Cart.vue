@@ -1,41 +1,42 @@
 <template>
     <div class="container">
         <br>
-      <div class="row">
+        <router-link :to="{ name: 'Shop' }"><span class="badge badge-primary badge-pill"><i class="fas fa-long-arrow-alt-left"></i> Continue Shopping</span></router-link>
+        <br>
+        <br>
+      <div v-if="cart_cupcakes.length == 0" class="jumbotron">
+        <h1 class="display-4">Your cart is empty!</h1>
+        <p class="lead">Apparently you haven't added anything to your cart.</p>
+        <hr class="my-4">
+        <p class="lead">
+          <router-link :to="{ name: 'Shop' }"><span class="bbtn btn-primary btn-lg">Browse Store</span></router-link>
+        </p>
+      </div>
+      <div v-else class="row">
         <div class="col-md-4 order-md-2 mb-4">
           <h4 class="d-flex justify-content-between align-items-center mb-3">
             <span class="text-muted">Your cart</span>
-            <span class="badge badge-secondary badge-pill">{{ count }}</span>
+            <span class="badge pink badge-pill">{{ count }} items</span>
           </h4>
           <ul class="list-group mb-3">
             <li v-for="cupcake in cart_cupcakes" :key="cupcake.id"  class="list-group-item d-flex justify-content-between lh-condensed">
               <div>
-                <h6 class="my-0">{{ cupcake.name }}</h6>
-                <small class="text-muted">{{ cupcake.description }}</small>
+                <h5 class="my-0">{{ cupcake.name }} </h5>
+                <h6>  ${{ cupcake.price.toFixed(2) }} each</h6>
+                <small class="text-muted">{{ cupcake.description }}</small><br>
+                <input type="number" id="quantity" name="quantity" class="float-right quantity form-control" v-model="cupcake.quantity" min="1" max="10">
+                <small class="float-left">quantity</small>
               </div>
-              <span class="text-muted">${{ cupcake.price }}</span>
+              <h5 class="text-muted">${{ (cupcake.price * cupcake.quantity).toFixed(2) }}</h5>
+              <a class="badge delete badge-pill float-right" v-on:click.stop="deleteCupcake(cupcake.id)"><i class="fas fa-times"></i></a>
             </li>
             <li class="list-group-item d-flex justify-content-between bg-light">
               <div class="text-success">
-                <h6 class="my-0">Promo code</h6>
-                <small>EXAMPLECODE</small>
+                <h6 class="my-0">Total (USD)</h6>
               </div>
-              <span class="text-success">-$5</span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between">
-              <span>Total (USD)</span>
-              <strong>${{ total.toFixed(2) }}</strong>
+              <h3 class="text-success">${{ total.toFixed(2) }}</h3>
             </li>
           </ul>
-
-          <form class="card p-2">
-            <div class="input-group">
-              <input type="text" class="form-control" placeholder="Promo code">
-              <div class="input-group-append">
-                <button type="submit" class="btn btn-secondary">Redeem</button>
-              </div>
-            </div>
-          </form>
         </div>
         <div class="col-md-8 order-md-1">
           <h4 class="mb-3">Billing address</h4>
@@ -179,12 +180,14 @@
           </form>
         </div>
       </div>
+      <br>
     </div>
 </template>
 
 <script>
 import firebase from 'firebase'
 import db from '@/firebase/init'
+import { type } from 'os'
 
 export default {
     name: 'Cart',
@@ -204,7 +207,23 @@ export default {
                     return cupcake.id != id;
                 });
             })
+        },
+        updateTotal(){
+          let total = 0;
+          this.cart_cupcakes.forEach(function (value) {
+            total += parseFloat(value.price * value.quantity)
+          });
+
+          this.total = total;
+          console.log(this.total, typeof(this.total))
         }
+    },
+    updated(){
+      if(this.cart_cupcakes.length > 0)
+      {
+        this.updateTotal()
+      }
+       
     },
     created(){
         let user = firebase.auth().currentUser
@@ -215,7 +234,7 @@ export default {
             snapshot.forEach(doc => {
                 let cupcake = doc.data();
                 cupcake.description = doc.data().description.substring(0,20) + "..."
-                cupcake.price = doc.data().price.toFixed(2);
+                cupcake.price = doc.data().price;
                 cupcake.id = doc.id
                 this.cart_cupcakes.push(cupcake)
                 this.total += parseFloat(cupcake.price)
@@ -228,5 +247,14 @@ export default {
 </script>
 
 <style>
-
+.quantity{
+  font-size: 12px;
+  width: 35%;
+}
+.delete{
+  color: white;
+  background-color: #F846A0;
+  height: 20px;
+  cursor: pointer;
+}
 </style>

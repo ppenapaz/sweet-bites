@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container" id="content-wrap">
         <br>
         <div class="row">
             <div class="col-sm-6" v-for="cupcake in cupcakes" :key="cupcake.id">
@@ -10,9 +10,20 @@
                     <div class="col-sm-8">
                         <h5 class="">{{ cupcake.name }}</h5>
                         <p class="">{{ cupcake.description }}</p>
-                        <span v-for="(ing, index) in cupcake.ingredients" :key="index" class="badge badge-pill badge-primary">{{ing}}</span>
+                        <h4>${{ cupcake.price.toFixed(2) }}</h4>
+                        <span v-for="(ing, index) in cupcake.ingredients" :key="index" class="badge badge-pill pink ingredient">{{ing}}</span>
                         <p></p>
-                        <a @click.prevent="addCart(cupcake.id)" class="btn-buy btn btn-primary" role="button"><i class="fas fa-shopping-cart"></i> Add to cart</a>
+                        <div class="col-sm-6">
+                            <div class="input-group">
+                                <div class="input-group-append">
+                                    <input type="number" id="quantity" name="quantity" class="form-control input-number" v-model="cupcake.quantity" min="1" max="10" size="3">
+                                    <a @click.prevent="addCart(cupcake)" class="btn-buy btn btn-primary" role="button"><i class="fas fa-shopping-cart"></i> Add to cart</a>
+                                </div>
+                            </div>
+                        </div>
+                        <p></p>
+                        
+                        <p></p>
                     </div>
                 </div>
             </div>
@@ -33,7 +44,8 @@ export default {
         }
     },
     methods: {
-        addCart(id) {
+        addCart(param_cupcake) {
+            let id = param_cupcake.id
             let user = firebase.auth().currentUser
 
             // FIND CUPCAKE
@@ -41,9 +53,9 @@ export default {
                 let add_cupcake = {
                     cupcake_id: doc.id,
                     user_id: user.uid,
-                    price: doc.data().price,
+                    price: param_cupcake.price,
                     name: doc.data().name,
-                    quantity: 1,
+                    quantity: param_cupcake.quantity,
                     description: doc.data().description
                 }
                 //console.log(add_cupcake) 
@@ -52,6 +64,8 @@ export default {
                 db.collection('cart').add(add_cupcake).catch(err => {
                     console.log(err)
                 })
+
+                alert(`${add_cupcake.name} was added to cart!`);
 
             }).catch( (error) => { })
         }
@@ -63,6 +77,7 @@ export default {
             snapshot.forEach(doc => {
                 let cupcake = doc.data();
                 cupcake.id = doc.id
+                cupcake.quantity = 1
                 this.cupcakes.push(cupcake)
             })
         })
@@ -76,5 +91,12 @@ export default {
     border: 1px solid rgba(0,0,0,.125);
     margin: 2px;
     padding: 1px 10px;
+}
+.ingredient{
+    margin-right: 2px;
+}
+
+.input-number{
+    width: auto;
 }
 </style>
