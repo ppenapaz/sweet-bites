@@ -3,8 +3,10 @@ import Router from 'vue-router'
 import Home from '@/components/home/Home'
 import Shop from '@/components/home/Shop'
 import Cart from '@/components/home/Cart'
+import Checkout from '@/components/home/Checkout'
 import Signup from '@/components/auth/Signup'
 import Login from '@/components/auth/Login'
+import Profile from '@/components/auth/Profile'
 import firebase from 'firebase'
 
 Vue.use(Router)
@@ -15,6 +17,22 @@ const router = new Router({
       path: '/',
       name: 'Home',
       component: Home
+    },
+    {
+      path: '/checkout',
+      name: 'Checkout',
+      component: Checkout,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/profile',
+      name: 'Profile',
+      component: Profile,
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: '/shop',

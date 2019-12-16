@@ -48,8 +48,16 @@ export default {
             let id = param_cupcake.id
             let user = firebase.auth().currentUser
 
+            // let user_cart = db.collection('cart').where('user_id', '==', user.uid).get().then( (doc) => {    
+            //     // fill cupcake with found one
+            //     console.log(doc)
+            //     }).catch(err => {
+            //         console.log(err)
+            //     })
+
             // FIND CUPCAKE
             let ref = db.collection('cupcakes').doc(id).get().then( (doc) => {    
+                // fill cupcake with found one
                 let add_cupcake = {
                     cupcake_id: doc.id,
                     user_id: user.uid,

@@ -137,15 +137,11 @@
                 <input id="debit" name="paymentMethod" type="radio" class="custom-control-input" required="">
                 <label class="custom-control-label" for="debit">Debit card</label>
               </div>
-              <div class="custom-control custom-radio">
-                <input id="paypal" name="paymentMethod" type="radio" class="custom-control-input" required="">
-                <label class="custom-control-label" for="paypal">Paypal</label>
-              </div>
             </div>
             <div class="row">
               <div class="col-md-6 mb-3">
                 <label for="cc-name">Name on card</label>
-                <input type="text" class="form-control" id="cc-name" placeholder="" required="">
+                <input type="text" class="form-control" v-model="info.name" disabled id="cc-name" placeholder="" required="">
                 <small class="text-muted">Full name as displayed on card</small>
                 <div class="invalid-feedback">
                   Name on card is required
@@ -153,7 +149,7 @@
               </div>
               <div class="col-md-6 mb-3">
                 <label for="cc-number">Credit card number</label>
-                <input type="text" class="form-control" id="cc-number" placeholder="" required="">
+                <input type="text" class="form-control" v-model="info.card" disabled id="cc-number" placeholder="" required="">
                 <div class="invalid-feedback">
                   Credit card number is required
                 </div>
@@ -162,21 +158,22 @@
             <div class="row">
               <div class="col-md-3 mb-3">
                 <label for="cc-expiration">Expiration</label>
-                <input type="text" class="form-control" id="cc-expiration" placeholder="" required="">
+                <input type="text" class="form-control" v-model="info.exp" disabled id="cc-expiration" placeholder="" required="">
                 <div class="invalid-feedback">
                   Expiration date required
                 </div>
               </div>
               <div class="col-md-3 mb-3">
                 <label for="cc-expiration">CVV</label>
-                <input type="text" class="form-control" id="cc-cvv" placeholder="" required="">
+                <input type="text" class="form-control" v-model="info.cvv" disabled id="cc-cvv" placeholder="" required="">
                 <div class="invalid-feedback">
                   Security code required
                 </div>
               </div>
             </div>
+            <router-link :to="{ name: 'Profile' }"><span class="badge badge-primary badge-pill">Update Payment Info</span></router-link>
             <hr class="mb-4">
-            <button class="btn btn-primary btn-lg btn-block" type="submit">Continue to checkout</button>
+            <router-link class="btn btn-primary btn-lg btn-block" :to="{ name: 'Checkout' }">Continue to checkout</router-link>
           </form>
         </div>
       </div>
@@ -195,7 +192,8 @@ export default {
         return{
             cart_cupcakes: [],
             total: 0,
-            count: 0
+            count: 0,
+            info: null
         }
     },
     methods: {
@@ -241,6 +239,14 @@ export default {
                 this.count++
             })
         })
+
+        let ref = db.collection('users').where('user_id', '==', user.uid).get().then(snapshot => {
+            snapshot.forEach(doc => {
+                this.info = doc.data()
+                this.info.id = doc.id
+                console.log('inside foreach', this.info.name)
+            })
+        }).catch( (error) => { })
 
     }
 }

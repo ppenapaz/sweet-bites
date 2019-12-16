@@ -34,14 +34,34 @@ export default {
     methods: {
         signup() {
             if(this.email && this.password){
-                //create user with email and password
-                firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
-                .then(() => {
-                    this.$router.push({ name: 'Home' })
-                }).catch(err => {
-                    console.log('err')
-                    console.log(err)
-                    this.feedback = err.message
+                //check in DB for duplicate value
+                let ref = db.collection('users').where('email','==', this.email)
+                ref.get().then(doc => {
+                    if(doc.exists){
+                        this.feedback = 'This email already exists'
+                    } else {
+                        //create user with email and password
+                        firebase.auth().createUserWithEmailAndPassword(this.email, this.password).then(cred => {
+                            let user_in = {
+                                email: this.email,
+                                name: null,
+                                card: null,
+                                exp: null,
+                                cvv: null,
+                                user_id: cred.user.uid
+                            }
+                            db.collection('users').add(user_in).catch(err => {
+                                console.log(err)
+                            })
+                        }).then(() => {
+                            this.$router.push({ name: 'Profile' })
+                        }).catch(err => {
+                            console.log('error!!')
+                            console.log(err)
+                            this.feedback = err.message
+                        })
+                        this.feedback = 'This email is free to use'
+                    }
                 })
             } else {
                 this.feedback = "You must all fields."

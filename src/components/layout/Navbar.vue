@@ -10,6 +10,7 @@
                 <router-link :to="{ name: 'Home' }" class="nav-btn btn btn-pink btn-lg"><i class="fas fa-home"></i></router-link>
                 <router-link :to="{ name: 'Shop' }" class="nav-btn btn btn-primary btn-lg"><i class="fas fa-gift"></i> Shop</router-link>
                 <router-link v-if="!user" :to="{ name: 'Login' }" class="nav-btn btn btn-info btn-lg"><i class="fas fa-user"></i></router-link>
+                <router-link v-if="user" :to="{ name: 'Profile' }" class="nav-btn btn btn-info btn-lg"><i class="fas fa-user"></i></router-link>
                 <a v-if="user" class="nav-btn btn btn-danger btn-lg" @click="logout"><i class="fas fa-sign-out-alt"></i></a>
             </div>
             <div class="right-side">
