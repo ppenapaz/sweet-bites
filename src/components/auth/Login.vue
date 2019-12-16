@@ -15,6 +15,7 @@
                 <p class="red-text center" v-if="feedback">{{ feedback }}</p>
                 <button type="submit" class="btn btn-primary">Login</button>
             </form>
+            <router-link :to="{ name: 'Signup' }" >New here? Register here</router-link>
         </div>
     </div>
 </template>
